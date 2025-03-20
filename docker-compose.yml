@@ -1,0 +1,7 @@
+services:
+  # Redis
+  redis:
+    image: redis:latest-alpine
+    ports:
+      - 6379:6379
+

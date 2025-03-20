@@ -1,0 +1,25 @@
+{
+  "name": "blokbuster",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types"
+  },
+  "packageManager": "pnpm@9.14.2",
+  "keywords": [
+    
+  ],
+  "author": "AbdelH2O",
+  "license": "ISC",
+  "devDependencies": {
+    "turbo": "^2.4.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  }
+}

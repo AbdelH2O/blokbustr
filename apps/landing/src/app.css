@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import 'tailwindcss';
+
+@theme {
+	--color-background: #0A192F;
+	--color-background-alt: #112240;
+	--color-primary: #00FF99;
+	--color-primary-alt: #00D4FF;
+	--color-secondary: #64FFDA;
+}
+
+@layer base {
+	* {
+		box-sizing: border-box;
+	}
+
+	html {
+		font-size: 16px;
+	}
+
+	body {
+		font-family: 'JetBrains Mono', monospace;
+		background-color: var(--color-background);
+		color: var(--color-primary);
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		color: var(--color-primary);
+	}
+
+	a {
+		color: var(--color-primary);
+		text-decoration: none;
+	}
+}
