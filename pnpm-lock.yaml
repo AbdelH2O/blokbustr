@@ -95,6 +95,12 @@ importers:
       aws-cdk-lib:
         specifier: ^2.148.0
         version: 2.190.0(constructs@10.4.2)
+      constructs:
+        specifier: ^10.4.2
+        version: 10.4.2
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
 
   packages/providers:
     dependencies:
@@ -1651,6 +1657,10 @@ packages:
   diff@5.2.0:
     resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
     engines: {node: '>=0.3.1'}
+
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+    engines: {node: '>=12'}
 
   dtrace-provider@0.8.8:
     resolution: {integrity: sha512-b7Z7cNtHPhH9EJhNNbbeqTcXB8LGFFZhq1PGgEvpeHlzd36bhbdTWoE/Ba/YguqpBSlAPKnARWhVlhunCMwfxg==}
@@ -4668,6 +4678,8 @@ snapshots:
     optional: true
 
   diff@5.2.0: {}
+
+  dotenv@16.5.0: {}
 
   dtrace-provider@0.8.8:
     dependencies:

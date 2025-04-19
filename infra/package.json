@@ -1,0 +1,25 @@
+{
+	"name": "@blokbustr/infra",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc -w",
+		"deploy": "cdk deploy",
+		"bootstrap": "cdk bootstrap",
+		"deploy:all": "cdk deploy --all",
+		"diff": "cdk diff",
+		"synth": "cdk synth"
+	},
+	"dependencies": {
+		"@types/node": "^22.10.2",
+		"aws-cdk": "^2.148.0",
+		"aws-cdk-lib": "^2.148.0",
+		"constructs": "^10.4.2",
+		"dotenv": "^16.5.0"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}

@@ -1,0 +1,55 @@
+{
+	"services": {
+		"watcher": {
+			"instances": [
+				{
+					"chain": "ETHEREUM",
+					"type": "Socket",
+					"cpu": 256,
+					"memory": 512
+				},
+				{
+					"chain": "SOLANA",
+					"type": "Polling",
+					"cpu": 512,
+					"memory": 1024
+				},
+				{
+					"chain": "BITCOIN",
+					"type": "Polling",
+					"cpu": 512,
+					"memory": 1024
+				}
+			]
+		},
+		"explorer": {
+			"enabled": false,
+			"port": 3000,
+			"apiVersion": "v1"
+		},
+		"identifier": {
+			"enabled": false,
+			"port": 3001
+		},
+		"infrastructure": {
+			"environment": "production",
+			"region": "us-central-1",
+			"vpc": {
+				"maxAzs": 2,
+				"natGateways": 1
+			},
+			"redis": {
+				"nodeType": "cache.t3.micro",
+				"numShards": 1,
+				"replicas": 1,
+				"autoMinorVersionUpgrade": true
+			},
+			"instances": {
+				"watcher": {
+					"instanceType": "t3.medium",
+					"diskSize": 20
+				}
+			}
+		}
+	}
+}
