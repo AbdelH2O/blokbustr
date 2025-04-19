@@ -1,4 +1,8 @@
 <script lang="ts">
+	import { browser } from "$app/environment";
+	import { toast } from "svelte-sonner";
+	// import { POST } from "./api/subscribe/+server";
+
 	let email = $state('');
 	let isValid = $state(false);
 	$effect(() => {
@@ -10,21 +14,34 @@
 		console.log(isValid);
 	});
 
-	function handleSubmit() {
-		// if (browser) {
-		// 	fetch('https://api.example.com/submit', {
-		// 		method: 'POST',
-		// 		body: JSON.stringify({ email }),
-		// 		headers: {
-		// 			'Content-Type': 'application/json'
-		// 		}
-		// 	})
-		// 		.then((response) => response.json())
-		// 		.then((data) => {
-		// 			console.log(data);
-		// 			goto('/thank-you');
-		// 		});
-		// }
+	async function handleSubmit(e: Event) {
+		e.preventDefault();
+		if (!isValid) {
+			toast("Please enter a valid email address", {
+				duration: 2000,
+			});
+			return;
+		}
+		toast.loading("Submitting your email...", {
+			duration: 2000,
+		});
+		const res = await fetch("/api/subscribe", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ email }),
+		});
+		if (res.ok) {
+			toast.success("Email submitted successfully!", {
+				duration: 2000,
+			});
+			email = "";
+		} else {
+			toast.error("Error submitting email", {
+				duration: 2000,
+			});
+		}
 	}
 </script>
 
@@ -80,7 +97,7 @@
 					Join our waitlist to be the first to know when we launch.
 				</p>
 			</div>
-			<div class="flex flex-row items-center justify-center gap-4 md:justify-start">
+			<form class="flex flex-row items-center justify-center gap-4 md:justify-start" method="POST" action="/api/subscribe" onsubmit={handleSubmit}>
 				<div
 					class="flex w-full flex-col items-center justify-between gap-4 md:w-fit md:flex-row md:gap-0"
 				>
@@ -89,14 +106,15 @@
 						type="text"
 						class="bg-background box-border w-full border py-2 pl-2 outline-0 md:w-60 md:border-r-0"
 					/>
+					<!-- type="submit" -->
+					<!-- onclick={handleSubmit} -->
 					<button
-						disabled={!isValid}
-						onclick={handleSubmit}
+					disabled={!isValid}
 						class="border-primary bg-primary text-background cursor-pointer border px-4 py-2 font-medium transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-75"
 						>Join the waitlist</button
 					>
 				</div>
-			</div>
+			</form>
 		</div>
 	</div>
 </div>

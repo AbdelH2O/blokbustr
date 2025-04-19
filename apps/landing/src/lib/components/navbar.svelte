@@ -1,6 +1,7 @@
 <script>
 	import icon from "$lib/assets/icon.png";
 	import cover from "$lib/assets/cover.png";
+	import { toast } from "svelte-sonner";
 
 	export let title = "blokbustr";
 	export let logoAlt = "Logo";
@@ -50,6 +51,6 @@
 	</ul>
 	<div class="ml-auto ">
 		<a href="#" class="bg-primary text-background p-2">Login</a>
-		<a href="#" class="bg-primary text-background p-2">Sign Up</a>
+		<button onclick={() => toast("Test test")} class="bg-primary text-background p-2">Sign Up</button>
 	</div>
 </nav>
