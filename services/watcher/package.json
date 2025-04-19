@@ -1,0 +1,18 @@
+{
+  "name": "@blokbustr/watcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@blokbustr/providers": "workspace:*",
+    "@blokbustr/schema": "workspace:*",
+    "@types/node": "^22.10.2",
+    "redis": "^4.7.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
