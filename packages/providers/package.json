@@ -4,8 +4,9 @@
   "description": "",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "check-types": "tsc --noEmit"
   },
   "keywords": [],
@@ -18,11 +19,13 @@
     "ethers": "^6.13.5",
     "hardhat": "^2.22.19",
     "node-fetch": "^3.3.2",
+    "winston": "^3.17.0",
     "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/node": "^22.11.18",
     "@types/node-fetch": "^2.6.12",
+    "tsc-alias": "^1.8.15",
     "typescript": "^5.8.2"
   }
 }

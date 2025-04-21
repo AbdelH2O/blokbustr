@@ -1,20 +1,22 @@
 {
-  "name": "@blokbustr/watcher",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-	"build": "tsc",
-	"start": "node dist/index.js",
-	"dev": "ts-node-dev --respawn --transpile-only src/index.ts"
-  },
-  "dependencies": {
-    "@blokbustr/providers": "workspace:*",
-    "@blokbustr/schema": "workspace:*",
-    "@types/node": "^22.10.2",
-    "redis": "^4.7.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+	"name": "@blokbustr/watcher",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"start": "node dist/index.js",
+		"dev": "ts-node-dev --respawn --transpile-only src/index.ts"
+	},
+	"dependencies": {
+		"@blokbustr/providers": "workspace:*",
+		"@blokbustr/schema": "workspace:*",
+		"@types/node": "^22.10.2",
+		"redis": "^4.7.0",
+		"typescript": "^5.7.2"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
 }
