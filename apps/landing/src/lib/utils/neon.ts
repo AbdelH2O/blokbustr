@@ -1,6 +1,6 @@
 import { neon } from '@neondatabase/serverless';
-import { DATABASE_URL } from '$env/static/private';
+import { POSTGRES_URL } from '$env/static/private';
 
-const sql = neon(DATABASE_URL);
+const sql = neon(POSTGRES_URL);
 
 export default sql;
