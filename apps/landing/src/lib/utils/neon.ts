@@ -1,6 +1,8 @@
+import 'dotenv/config';
 import { neon } from '@neondatabase/serverless';
-import { env } from '$env/dynamic/private';
 
-const sql = neon(env.POSTGRES_URL);
+const connectionString: string = process.env.POSTGRES_URL as string;
+
+const sql = neon(connectionString);
 
 export default sql;

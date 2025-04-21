@@ -13,6 +13,10 @@ importers:
         version: 2.4.4
 
   apps/landing:
+    dependencies:
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
     devDependencies:
       '@eslint/compat':
         specifier: ^1.2.5
