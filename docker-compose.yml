@@ -1,7 +1,64 @@
 services:
   # Redis
   redis:
-    image: redis:latest-alpine
+    image: redis:7
     ports:
       - 6379:6379
+      
+  # Localstack for AWS services emulation
+  localstack:
+    image: localstack/localstack:latest
+    ports:
+      - "4566:4566"            # LocalStack Gateway
+      - "4510-4559:4510-4559"  # external services port range
+    environment:
+      - DEBUG=1
+      - SERVICES=sqs
+      - AWS_DEFAULT_REGION=us-east-1
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - HOSTNAME_EXTERNAL=localstack
+    volumes:
+      - "${TMPDIR:-/tmp}/localstack:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      
+  # Initialize the SQS queue
+  init-localstack:
+    image: amazon/aws-cli:latest
+    depends_on:
+      - localstack
+    environment:
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+      - AWS_DEFAULT_REGION=us-east-1
+    entrypoint: /bin/sh -c
+    command: >
+      "
+        # Wait for localstack to be ready
+        sleep 10
+        
+        # Create the SQS queue
+        aws --endpoint-url=http://localstack:4566 sqs create-queue --queue-name blokbustr-explorer
+        
+        # List queues to verify creation
+        aws --endpoint-url=http://localstack:4566 sqs list-queues
+      "
+        
+  watcher:
+    build:
+      context: .
+      dockerfile: ./services/watcher/Dockerfile
+    environment:
+    # use the docker
+      - REDIS_URL=redis://
+      - WATCHER_CHAIN=ETHEREUM
+      - SOCKET_CONNECTION=true
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_REGION=us-east-1
+      - AWS_ACCESS_KEY_ID=test
+      - AWS_SECRET_ACCESS_KEY=test
+    depends_on:
+      - redis
+      - localstack
+    env_file:
+      - ./services/watcher/.env
 
