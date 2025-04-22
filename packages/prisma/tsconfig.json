@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "lib": ["ES2017"],
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext"
+  },
+  "include": ["./src"]
+}

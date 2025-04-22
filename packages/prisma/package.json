@@ -1,0 +1,27 @@
+{
+  "name": "@blokbustr/prisma",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prisma:migrate": "prisma migrate dev --name",
+    "prisma:pull": "prisma db pull",
+    "prisma:push": "prisma db push",
+    "prisma:deploy": "prisma migrate deploy",
+    "prisma:sql": "prisma generate --sql"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0",
+    "ts-node": "^10.9.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "prisma": "^6.5.0",
+    "prisma-json-types-generator": "^3.2.2",
+    "typescript": "^5.7.2"
+  },
+  "author": "Christopher Helf",
+  "license": "SEE LICENSE IN LICENSE.txt"
+}
