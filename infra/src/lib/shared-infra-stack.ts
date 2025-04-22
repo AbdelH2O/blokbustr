@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elasticache from 'aws-cdk-lib/aws-elasticache';
 import * as ssm from 'aws-cdk-lib/aws-ssm';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 // Define types for shared infrastructure configuration
 interface RedisConfig {
@@ -37,6 +38,7 @@ export class SharedInfraStack extends cdk.Stack {
 	public readonly redisEndpointAddress: string;
 	public readonly redisEndpointPort: string;
 	public readonly redisSecurityGroup: ec2.SecurityGroup;
+	public readonly explorerQueue: sqs.Queue;
 
 	constructor(scope: cdk.App, id: string, props: SharedInfraStackProps) {
 		super(scope, id, props);
@@ -65,7 +67,7 @@ export class SharedInfraStack extends cdk.Stack {
 		// Create the Redis cluster
 		const redisConfig = infraConfig.redis;
 		const redisCluster = new elasticache.CfnReplicationGroup(this, 'RedisCluster', {
-			replicationGroupDescription: 'Redis cluster for Blokbuster services',
+			replicationGroupDescription: 'Redis cluster for Blokbustr services',
 			engine: 'redis',
 			cacheNodeType: redisConfig.nodeType || 'cache.t3.micro',
 			numNodeGroups: redisConfig.numShards || 1,
@@ -83,13 +85,13 @@ export class SharedInfraStack extends cdk.Stack {
 
 		// Store the Redis connection information in SSM Parameter Store for other stacks/services to use
 		new ssm.StringParameter(this, 'RedisEndpointParam', {
-			parameterName: `/${infraConfig.environment}/blokbuster/redis/endpoint`,
+			parameterName: `/${infraConfig.environment}/blokbustr/redis/endpoint`,
 			stringValue: this.redisEndpointAddress,
 			description: 'Redis cluster endpoint address',
 		});
 
 		new ssm.StringParameter(this, 'RedisPortParam', {
-			parameterName: `/${infraConfig.environment}/blokbuster/redis/port`,
+			parameterName: `/${infraConfig.environment}/blokbustr/redis/port`,
 			stringValue: this.redisEndpointPort,
 			description: 'Redis cluster endpoint port',
 		});
@@ -98,19 +100,40 @@ export class SharedInfraStack extends cdk.Stack {
 		new cdk.CfnOutput(this, 'RedisEndpoint', {
 			value: this.redisEndpointAddress,
 			description: 'Redis cluster endpoint address',
-			exportName: 'BlokbusterRedisEndpoint',
+			exportName: 'BlokbustrRedisEndpoint',
 		});
 
 		new cdk.CfnOutput(this, 'RedisPort', {
 			value: this.redisEndpointPort,
 			description: 'Redis cluster endpoint port',
-			exportName: 'BlokbusterRedisPort',
+			exportName: 'BlokbustrRedisPort',
 		});
 
 		new cdk.CfnOutput(this, 'VpcId', {
 			value: this.vpc.vpcId,
 			description: 'ID of the shared VPC',
-			exportName: 'BlokbusterVpcId',
+			exportName: 'BlokbustrVpcId',
+		});
+
+		// Create an SQS queue for explorer service
+		this.explorerQueue = new sqs.Queue(this, 'ExplorerQueue', {
+			queueName: `blokbustr-explorer-${infraConfig.environment}`,
+			visibilityTimeout: cdk.Duration.seconds(300),
+			retentionPeriod: cdk.Duration.days(7),
+		});
+
+		// Store the Queue URL in SSM Parameter Store
+		new ssm.StringParameter(this, 'ExplorerQueueUrlParam', {
+			parameterName: `/${infraConfig.environment}/blokbustr/explorer/queue-url`,
+			stringValue: this.explorerQueue.queueUrl,
+			description: 'Explorer SQS queue URL',
+		});
+
+		// Export the Queue URL for cross-stack references
+		new cdk.CfnOutput(this, 'ExplorerQueueUrl', {
+			value: this.explorerQueue.queueUrl,
+			description: 'URL of the Explorer SQS Queue',
+			exportName: 'BlokbustrExplorerQueueUrl',
 		});
 	}
 }

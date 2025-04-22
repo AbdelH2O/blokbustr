@@ -6,7 +6,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { SharedInfraStack, SharedInfraStackProps } from './lib/shared-infra-stack';
 import { WatcherEC2Stack, WatcherStackProps } from './lib/watcher-ec2-stack';
-import { EcrStack, EcrStackProps } from './lib/ecr-stack';
+// import { EcrStack, EcrStackProps } from './lib/ecr-stack';
+import { ExplorerFargateStack, ExplorerFargateStackProps } from './lib/explorer-fargate-stack';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -23,31 +24,44 @@ const env = {
 };
 
 // Create ECR repositories first
-const ecrStack = new EcrStack(app, 'BlokbusterEcrStack', {
-  env,
-  description: 'ECR repositories for Blokbuster services',
-  config: config
-} as EcrStackProps);
+// const ecrStack = new EcrStack(app, 'BlokbusterEcrStack', {
+//   env,
+//   description: 'ECR repositories for Blokbuster services',
+//   config: config
+// } as EcrStackProps);
 
 // Deploy the shared infrastructure stack first (VPC, Redis, etc.)
-const sharedInfra = new SharedInfraStack(app, 'BlokbusterSharedInfraStack', {
+const sharedInfra = new SharedInfraStack(app, 'BlokbustrSharedInfraStack', {
   env,
-  description: 'Blokbuster shared infrastructure with VPC and Redis',
+  description: 'Blokbustr shared infrastructure with VPC and Redis',
   config: config
 } as SharedInfraStackProps);
 
 // Deploy watcher stack with configuration, depending on shared infrastructure
-new WatcherEC2Stack(app, 'BlokbusterWatcherStack', {
+new WatcherEC2Stack(app, 'BlokbustrWatcherStack', {
   env,
-  description: 'Blokbuster blockchain watcher services running on EC2',
+  description: 'Blokbustr blockchain watcher services running on EC2',
+  config: config,
+  // Pass the shared infrastructure resources
+  vpc: sharedInfra.vpc,
+  redisEndpoint: sharedInfra.redisEndpointAddress,
+  redisPort: sharedInfra.redisEndpointPort,
+  redisSecurityGroup: sharedInfra.redisSecurityGroup
+  // No longer passing ECR repository as we're using Docker Hub images
+} as WatcherStackProps);
+
+// Deploy explorer stack with configuration on Fargate with auto-scaling
+new ExplorerFargateStack(app, 'BlokbustrExplorerStack', {
+  env,
+  description: 'Blokbustr explorer services running on Fargate with auto-scaling',
   config: config,
   // Pass the shared infrastructure resources
   vpc: sharedInfra.vpc,
   redisEndpoint: sharedInfra.redisEndpointAddress,
   redisPort: sharedInfra.redisEndpointPort,
   redisSecurityGroup: sharedInfra.redisSecurityGroup,
-  // Pass the ECR repository
-  ecrRepository: ecrStack.watcherRepository
-} as WatcherStackProps);
+  sqsQueue: sharedInfra.explorerQueue
+  // No longer passing ECR repository as we're using Docker Hub images
+} as ExplorerFargateStackProps);
 
 app.synth();

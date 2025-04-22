@@ -77,7 +77,7 @@ export interface WatcherStackProps extends cdk.StackProps {
 	redisPort: string;
 	redisSecurityGroup: ec2.SecurityGroup;
 	// ECR repository for Docker images
-	ecrRepository: ecr.Repository;
+	// ecrRepository: ecr.Repository;
 }
 
 export class WatcherEC2Stack extends cdk.Stack {
@@ -88,7 +88,7 @@ export class WatcherEC2Stack extends cdk.Stack {
 		const WATCHER_CONFIG = props.config.services.watcher;
 		const WATCHER_INSTANCES = WATCHER_CONFIG.instances;
 		const INFRA_CONFIG = props.config.services.infrastructure;
-		const ecrRepositoryUri = props.ecrRepository.repositoryUri;
+		// const ecrRepositoryUri = props.ecrRepository.repositoryUri;
 
 		// Use the shared VPC passed from the SharedInfraStack
 		const vpc = props.vpc;
@@ -111,7 +111,7 @@ export class WatcherEC2Stack extends cdk.Stack {
 		});
 
 		// Generate a dynamic docker-compose file based on our configuration
-		const dockerComposeContent = this.generateDockerComposeFile(WATCHER_INSTANCES, props.redisEndpoint, props.redisPort, ecrRepositoryUri);
+		const dockerComposeContent = this.generateDockerComposeFile(WATCHER_INSTANCES, props.redisEndpoint, props.redisPort);
 		const setupScriptContent = this.generateSetupScript(dockerComposeContent);
 
 		// Create the EC2 instance using configuration from central config file
@@ -144,17 +144,17 @@ export class WatcherEC2Stack extends cdk.Stack {
    * Generates docker-compose content based on watcher configurations
    * Now uses a single image with different environment variables
    */
-	private generateDockerComposeFile(instances: WatcherInstance[], redisEndpoint: string, redisPort: string, ecrRepositoryUri: string): string {
+	private generateDockerComposeFile(instances: WatcherInstance[], redisEndpoint: string, redisPort: string): string {
 		let services: Record<string, DockerComposeService> = {};
 		
-		// Use the ECR repository URI instead of the config image
-		const imageUri = ecrRepositoryUri;
+		// Use Docker Hub image instead of ECR
+		const imageUri = "abdelh2o/blokbustr-watcher:latest";
 
 		// Create a service for each watcher instance, using the same base image
 		instances.forEach(instance => {
 			const serviceName = `${instance.chain.toLowerCase()}-${instance.type.toLowerCase()}`;
 			services[serviceName] = {
-				image: imageUri, // Using the ECR image for all instances
+				image: imageUri, // Using Docker Hub image for all instances
 				environment: {
 					WATCHER_CHAIN: instance.chain,
 					SOCKET_CONNECTION: instance.type === "socket" ? "true" : "false",
@@ -167,7 +167,7 @@ export class WatcherEC2Stack extends cdk.Stack {
 					driver: 'awslogs',
 					options: {
 						'awslogs-region': this.region,
-						'awslogs-group': '/blokbuster/watchers',
+						'awslogs-group': '/blokbustr/watchers',
 						'awslogs-stream-prefix': `${instance.chain}-${instance.type}`
 					}
 				}
@@ -202,7 +202,7 @@ curl -L "https://github.com/docker/compose/releases/latest/download/docker-compo
 chmod +x /usr/local/bin/docker-compose
 
 # Create logs directory
-mkdir -p /var/log/blokbuster
+mkdir -p /var/log/blokbustr
 
 # Create the docker-compose.yml file
 cat > /home/ec2-user/docker-compose.yml << 'EOF'
@@ -217,8 +217,8 @@ cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << 'EOF'
       "files": {
         "collect_list": [
           {
-            "file_path": "/var/log/blokbuster/*.log",
-            "log_group_name": "/blokbuster/watchers",
+            "file_path": "/var/log/blokbustr/*.log",
+            "log_group_name": "/blokbustr/watchers",
             "log_stream_name": "{instance_id}-{filename}"
           }
         ]
@@ -264,10 +264,10 @@ RUNNING_CONTAINERS=$(docker ps -q | wc -l)
 EXPECTED_CONTAINERS=$(docker-compose ps -q | wc -l)
 
 if [ "$RUNNING_CONTAINERS" -ne "$EXPECTED_CONTAINERS" ]; then
-  echo "Container health check failed: $RUNNING_CONTAINERS running out of $EXPECTED_CONTAINERS expected" | tee /var/log/blokbuster/health.log
+  echo "Container health check failed: $RUNNING_CONTAINERS running out of $EXPECTED_CONTAINERS expected" | tee /var/log/blokbustr/health.log
   exit 1
 fi
-echo "Container health check passed: all containers running" | tee /var/log/blokbuster/health.log
+echo "Container health check passed: all containers running" | tee /var/log/blokbustr/health.log
 exit 0
 EOF
 
@@ -285,7 +285,7 @@ echo "*/5 * * * * /home/ec2-user/health_check.sh" | crontab -
 	private createCloudWatchResources(instance: ec2.Instance, watchers: WatcherInstance[]): void {
 		// Create a dashboard
 		const dashboard = new cloudwatch.Dashboard(this, 'WatcherDashboard', {
-			dashboardName: 'BlokbusterWatchers'
+			dashboardName: 'BlokbustrWatchers'
 		});
 
 		// Create CPU metric

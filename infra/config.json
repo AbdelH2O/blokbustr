@@ -23,9 +23,21 @@
 			]
 		},
 		"explorer": {
-			"enabled": false,
+			"enabled": true,
 			"port": 3000,
-			"apiVersion": "v1"
+			"apiVersion": "v1",
+			"cpu": 512,
+			"memory": 1024,
+			"minCapacity": 1,
+			"maxCapacity": 10,
+			"desiredCount": 2,
+			"scalingMetric": {
+				"namespace": "Blokbustr",
+				"metricName": "JobsInQueue",
+				"dimensionName": "Service",
+				"dimensionValue": "Explorer",
+				"targetValue": 10
+			}
 		},
 		"identifier": {
 			"enabled": false,
