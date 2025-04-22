@@ -1,14 +1,14 @@
 {
   "name": "blokbustr",
+  "packageManager": "pnpm@9.14.2",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "turbo dev",
-    "build": "turbo build",
+    "build": "NODE_ENV=production turbo build",
     "check-types": "turbo check-types"
   },
-  "packageManager": "pnpm@9.14.2",
   "keywords": [
     
   ],
