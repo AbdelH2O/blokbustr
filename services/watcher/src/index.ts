@@ -1,13 +1,14 @@
-import { getProvider } from "@blokbustr/providers";
-import { isWatchedAddress } from "./utils/redis";
-import { notifyMatch } from "./utils/notify";
-import { getChainDetails } from "./constants";
+import { getSubscriptionProvider } from "@blokbustr/providers";
+import { isWatchedAddress } from "./utils/redis.js";
+import { notifyMatch } from "./utils/notify.js";
+import { getChainDetails } from "./constants.js";
+import { StandardTransaction } from "@blokbustr/schema";
 
 async function main() {
 	const { chain, connection } = getChainDetails();
-	const provider = getProvider(chain, connection as "polling" | "socket");
+	const provider = getSubscriptionProvider(chain, connection as "polling" | "socket");
 
-	await provider.getLatestTransactions(async (tx) => {
+	await provider.subscribe(async (tx: StandardTransaction) => {
 		const fromAddresses = Array.isArray(tx.from) ? tx.from : [tx.from];
 		const toAddresses = tx.to ? [tx.to] : [];
 		const allInvolved = [...fromAddresses, ...toAddresses].filter(Boolean);

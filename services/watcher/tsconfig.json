@@ -8,8 +8,8 @@
       "esModuleInterop": true,
       "resolveJsonModule": true,
       "lib": ["dom", "ESNext"],
-      "moduleResolution": "Bundler",
-      "module": "ESNext",
+      "moduleResolution": "nodenext",
+      "module": "NodeNext",
 	  "target": "ESNext",
   },
   "include": ["./src"]
