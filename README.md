@@ -15,6 +15,7 @@ The project follows a monorepo structure using Turborepo with the following comp
 - **services**
 	- `watcher`: Service for monitoring blockchain events
 	- `explorer`: Service for processing and analyzing blockchain data
+	- `identifier`: Service for identifying and storing wallets and their owner (exchanges, etc.)
 - **infra**: Infrastructure as code (using AWS CDK)
 
 ## Prerequisites
@@ -72,13 +73,14 @@ pnpm check-types
 
 ## Architecture
 
-1. **Watcher Service**: Monitors blockchain events and sends them to SQS queue
+1. **Watcher Service**: Monitors blockchain events and saves them to a database
 2. **Explorer Service**: Consumes events from SQS queue and processes blockchain data
-3. **Frontend**: Displays analytics and blockchain data to users
+3. **Identifier Service**: Identifies wallets and their owners (exchanges, etc.)
+4. **Frontend**: Displays analytics and blockchain data to users
 
 ## Infrastructure
 
-The infrastructure is likely managed with AWS CDK, with configuration files in the `infra` directory.
+The infrastructure is managed with AWS CDK, with configuration files in the `infra` directory.
 
 ## Technologies
 
