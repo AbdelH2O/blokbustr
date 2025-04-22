@@ -1,32 +1,33 @@
-;import { ChainProvider, ConnectionType } from "../types";
+import { ChainSubscriptionProvider, ConnectionType } from "@/types.js";
 import { Chain, StandardTransaction } from "@blokbustr/schema";
-import { ConnectionProvider } from "../constants";
-import Client from "bitcoin-core";
+import { getClient } from "@/clients/index.js";
+import { bitcoinLogger, subscriptionLogger } from "@/utils/logger.js";
 
-const client = new Client({
-	host: ConnectionProvider[Chain.BITCOIN].polling,
-	allowDefaultWallet: true,
-});
 
-let lastBlockHash: string | null = null;
-
-export function getBitcoinProvider(_connection: ConnectionType): ChainProvider {
+export function getBitcoinProvider(_connection: ConnectionType): ChainSubscriptionProvider {
+	const client = getClient(Chain.BITCOIN, "polling");
+	let lastBlockHash: string | null = null;
+	bitcoinLogger.info("Bitcoin subscription provider initialized");
 	return {
 		name: Chain.BITCOIN,
 		type: "non-evm",
 		connection: "polling",
 
-		getLatestTransactions: async (callback) => {
+		subscribe: async (callback) => {
+			bitcoinLogger.info("Starting Bitcoin block subscription");
 			setInterval(async () => {
 				try {
 					const bestBlockHash = await client.command("getbestblockhash");
 
 					if (bestBlockHash === lastBlockHash) return;
+					bitcoinLogger.debug(`New Bitcoin block detected: ${bestBlockHash}`);
 					lastBlockHash = bestBlockHash;
 
 					const block = await client.getBlockByHash(bestBlockHash);
 					const blockInfo = await client.command("getblock", bestBlockHash);
 					const timestamp = blockInfo.time || Math.floor(Date.now() / 1000);
+
+					bitcoinLogger.info(`Processing Bitcoin block ${block.height} with ${block.tx.length} transactions`);
 
 					for (const txId of block.tx) {
 						try {
@@ -44,9 +45,11 @@ export function getBitcoinProvider(_connection: ConnectionType): ChainProvider {
 								chainSpecific: txDetails // Store original tx for reference
 							};
 							
+							bitcoinLogger.debug(`Bitcoin transaction processed: ${txId}`);
 							callback(standardTx);
 						} catch (error) {
 							// Fallback with minimal information if detailed transaction fetch fails
+							bitcoinLogger.warn(`Failed to get full Bitcoin transaction details for ${txId}: ${error}`);
 							const standardTx: StandardTransaction = {
 								hash: txId,
 								from: ['unknown'],
@@ -58,11 +61,11 @@ export function getBitcoinProvider(_connection: ConnectionType): ChainProvider {
 							};
 							
 							callback(standardTx);
-							console.error(`Note: Limited data for Bitcoin transaction ${txId}`);
+							bitcoinLogger.warn(`Limited data for Bitcoin transaction ${txId}`);
 						}
 					}
 				} catch (error) {
-					console.error("Error in Bitcoin transaction watcher:", error);
+					bitcoinLogger.error(`Error in Bitcoin transaction watcher: ${error}`);
 				}
 			}, 10000);
 		}
