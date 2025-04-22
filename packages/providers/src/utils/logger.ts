@@ -18,7 +18,7 @@ const customFormat = format.combine(
   format.errors({ stack: true }),
   format.splat(),
   format.colorize(),
-  format.printf(({ timestamp, level, message, service = 'blokbuster', ...rest }) => {
+  format.printf(({ timestamp, level, message, service = 'blokbustr', ...rest }) => {
     const restString = Object.keys(rest).length ? `\n${JSON.stringify(rest, null, 2)}` : '';
     return `${timestamp} [${service}] ${level}: ${message}${restString}`;
   })
@@ -32,7 +32,7 @@ const consoleTransport = new winston.transports.Console({
 // Create the logger instance
 const logger = winston.createLogger({
   format: customFormat,
-  defaultMeta: { service: 'blokbuster' },
+  defaultMeta: { service: 'blokbustr' },
   transports: [consoleTransport],
   // Don't exit on error
   exitOnError: false,
@@ -40,7 +40,7 @@ const logger = winston.createLogger({
 
 // Helper method to create child loggers for different components
 export const createChildLogger = (component: string) => {
-  return logger.child({ service: `blokbuster:${component}` });
+  return logger.child({ service: `blokbustr:${component}` });
 };
 
 // Create default loggers for common components
@@ -54,7 +54,7 @@ export const subscriptionLogger = createChildLogger('subscription');
 if (process.env.LOG_TO_FILE === 'true') {
   logger.add(
     new winston.transports.File({
-      filename: process.env.LOG_FILE_PATH || 'logs/blokbuster.log',
+      filename: process.env.LOG_FILE_PATH || 'logs/blokbustr.log',
       level: process.env.LOG_FILE_LEVEL || 'info',
       format: format.combine(
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
