@@ -9,12 +9,13 @@ The project follows a monorepo structure using Turborepo with the following comp
 
 - **apps**
 	- `landing`: Frontend application 
+	- `visu`: Visualization application for displaying `explorer` results
 - **packages**
 	- `schema`: Shared types and schemas
 	- `providers`: Blockchain provider interfaces
 - **services**
 	- `watcher`: Service for monitoring blockchain events
-	- `explorer`: Service for processing and analyzing blockchain data
+	- `explorer`: Service for processing, following, and analyzing transactions
 	- `identifier`: Service for identifying and storing wallets and their owner (exchanges, etc.)
 - **infra**: Infrastructure as code (using AWS CDK)
 
