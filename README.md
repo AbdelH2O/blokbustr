@@ -94,7 +94,7 @@ The infrastructure is managed with AWS CDK, with configuration files in the `inf
 
 ## License
 
-ISC License - See license file for details.
+MIT License - See license file for details.
 
 ## Author
 
