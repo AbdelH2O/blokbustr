@@ -1,4 +1,4 @@
-import sql from "$lib/utils/neon"
+// import sql from "$lib/utils/neon"
 
 export const POST = async ({ request }) => {
 	const { email } = await request.json();
@@ -11,16 +11,16 @@ export const POST = async ({ request }) => {
 		});
 	}
 
-	const result = await sql("INSERT INTO landing (email) VALUES ($1)", email);
+	// const result = await sql("INSERT INTO landing (email) VALUES ($1)", email);
 
-	if (result) {
-		return new Response(JSON.stringify({ success: true, message: "Successfully subscribed. Thanks for joining us!" }), {
-			status: 200,
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-	}
+	// if (result) {
+	// 	return new Response(JSON.stringify({ success: true, message: "Successfully subscribed. Thanks for joining us!" }), {
+	// 		status: 200,
+	// 		headers: {
+	// 			"Content-Type": "application/json",
+	// 		},
+	// 	});
+	// }
 
 	return new Response(JSON.stringify({ success: false, error: "Failed to subscribe." }), {
 		status: 500,
