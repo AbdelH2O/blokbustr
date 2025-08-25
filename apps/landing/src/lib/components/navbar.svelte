@@ -37,7 +37,7 @@
 <nav class="flex items-center justify-between p-4 bg-background border-b border-primary/50">
 	<div class="flex items-center">
 		<a href="/">
-			<img src={icon} alt={logoAlt} class="h-12 mr-2" />
+			<!-- <img src={icon} alt={logoAlt} class="h-12 mr-2" /> -->
 		</a>
 	</div>
 	<ul class="flex space-x-4">
