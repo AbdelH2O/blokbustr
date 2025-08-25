@@ -21,7 +21,7 @@
 	}}
 />
 <svelte:head>
-	<script data-client-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0NzlkY2NhYy03ODhkLTRhODgtODVkNy1kYTBlNzhmMzdmZGYiLCJ0b2tlbiI6IjkzNGQ3MGVmLTNiM2MtNDYxZC04YWQ1LTBiMWI0NzQ5NTU1YyIsImhvc3QiOiJ3d3cuYmxva2J1c3RyLmNvbSJ9.RBwPlOzB_Atx8_LhxUDUUSMcLzZqfgrRxqMVZ88O_0w" src="https://cdn.transduce.ai/js/sdk.js"></script>
+	<script data-client-key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhMTYxZjhiZS04MTM4LTQwNGQtOTE3Ny1hMjcxN2I3MTUyMTgiLCJ0b2tlbiI6IjYwN2FmYjczLWY1ZTEtNGFiZi1hYjY5LWI0MjFiY2Q3NzJkNiIsImhvc3QiOiJ3d3cuYmxva2J1c3RyLmNvbSJ9.otIlkP5XPjWhiTEWXa3cvxLHhpEDxvoFGkVUMf6QavU" src="https://cdn.transduce.ai/js/sdk.js"></script>
 </svelte:head>
 <div
 	class="bg-background flex h-screen w-screen flex-col"
